@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3000
+
+### Say hello
+GET {{baseUrl}}/hello
+
+### Draw six loto numbers
+GET {{baseUrl}}/loto
