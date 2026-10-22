@@ -25,3 +25,15 @@ GET {{baseUrl}}/solve?numbers=1,1,1,1&target=100
 
 ### Same answer as JSON
 GET {{baseUrl}}/solve?numbers=3,3,8,8&target=24&format=json
+
+### Game of Life: two worlds with one starting cell changed
+GET {{baseUrl}}/universe?seed=hello-world
+
+### Animated SVG (open the URL in a browser to watch)
+GET {{baseUrl}}/universe?seed=hello-world&format=svg
+
+### Custom grid and duration
+GET {{baseUrl}}/universe?seed=butterfly&width=64&height=40&steps=120&density=35
+
+### Empty world: the changed cell disappears after one generation
+GET {{baseUrl}}/universe?seed=empty&density=0&format=svg

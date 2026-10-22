@@ -2,6 +2,7 @@ const express = require('express');
 const { drawLotoNumbers } = require('./lib/loto');
 const { askEightBall } = require('./lib/eight-ball');
 const { parseSolveOptions, solve, renderText } = require('./lib/solve');
+const { parseOptions, simulate, renderSvg } = require('./lib/universe');
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -50,6 +51,24 @@ app.get('/solve', (request, response) => {
   response.set('Cache-Control', 'no-store');
   if (options.format === 'text') {
     response.type('text').send(renderText(result));
+    return;
+  }
+  response.json(result);
+});
+
+app.get('/universe', (request, response) => {
+  let options;
+  try {
+    options = parseOptions(request.query);
+  } catch (error) {
+    response.status(400).json({ error: error.message });
+    return;
+  }
+  const result = simulate(options);
+  response.set('X-Content-Type-Options', 'nosniff');
+  response.set('Cache-Control', 'no-store');
+  if (options.format === 'svg') {
+    response.type('image/svg+xml').send(renderSvg(result));
     return;
   }
   response.json(result);

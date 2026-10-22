@@ -46,6 +46,38 @@ five-number limit bounds the search. No external services or API keys are used.
 Run `npm test` to check expression arithmetic, number usage, closest answers
 against an independent search, input validation, and HTTP endpoints.
 
+## Game of Life
+
+`GET /universe?seed=hello-world` runs two Game of Life grids with one central cell
+flipped in the second grid. It returns every generation as JSON, along with
+population and difference counts. Add `&format=svg` for the original animated
+three-panel view. Requests for both formats are in `requests.http`.
+
+| Parameter | Default | Accepted values |
+| --- | --- | --- |
+| `seed` | Random, returned in response | 1–64 ASCII letters, digits, `_`, `-` |
+| `width` | 40 | Integer 12–64 |
+| `height` | 24 | Integer 12–48 |
+| `steps` | 80 | Integer 1–120 |
+| `density` | 35 | Integer 0–100; initial live-cell probability in percent |
+| `format` | `json` | `json` or `svg` |
+
+All cells update simultaneously. A dead cell is born with three living neighbors;
+a living cell survives with two or three. Opposite edges connect. Grids are arrays
+of binary row strings, with coordinates starting at zero in the top-left.
+There are `steps + 1` frames including the starting state. The intervention toggles
+the cell at `(floor(width / 2), floor(height / 2))`.
+
+Identical seeds and parameters reproduce the same experiment. The response has
+replay links, the simulation version, the peak and final difference counts, the
+number of distinct positions that ever differed, and the first generation when
+the worlds matched again (`null` if they never match during the run).
+
+The SVG advances every 120 ms, holds the final state for two seconds, and loops.
+Its chart and summary describe the entire run. It needs a viewer that supports
+SVG SMIL animation; a static viewer shows generation zero.
+Unknown, repeated, and invalid parameters return HTTP 400 with a JSON error.
+
 ## Existing endpoints
 
 Install dependencies and run the local server:
