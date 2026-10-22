@@ -13,6 +13,25 @@ app.get('/loto', (_request, response) => {
   response.json({ numbers: drawLotoNumbers() });
 });
 
+app.get('/loto/:count', (request, response) => {
+  const input = request.params.count;
+  const count = Number(input);
+
+  if (!/^\d+$/.test(input) || count < 1 || count > 100) {
+    response.status(400).json({ error: 'Draw count must be an integer from 1 to 100' });
+    return;
+  }
+
+  const draws = Array.from({ length: count }, () => drawLotoNumbers());
+
+  if (request.query.format === 'text') {
+    response.type('text').send(draws.map((draw) => draw.join(', ')).join('\n'));
+    return;
+  }
+
+  response.json(draws);
+});
+
 app.get('/8ball', (_request, response) => {
   response.json({ answer: askEightBall() });
 });
