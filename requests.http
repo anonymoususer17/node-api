@@ -3,14 +3,25 @@
 ### Say hello
 GET {{baseUrl}}/hello
 
-### Draw six loto numbers
+### Loto
+# Modes: /loto draws one set; /loto/{count} returns multiple sets as JSON.
+# Add ?format=text to /loto/{count} for one set per line.
 GET {{baseUrl}}/loto
-
-### Draw ten sets of six loto numbers, one draw per line
-GET {{baseUrl}}/loto/10?format=text
-
-### Draw ten sets of six loto numbers as JSON
-GET {{baseUrl}}/loto/10
 
 ### Ask the magic 8 ball
 GET {{baseUrl}}/8ball
+
+### Make 24 using 3, 3, 8, 8. Each number must be used once.
+GET {{baseUrl}}/solve?numbers=3,3,8,8&target=24
+
+### Make 24 using 1, 3, 4, 6
+GET {{baseUrl}}/solve?numbers=1,3,4,6&target=24
+
+### Change the numbers and target to your own puzzle
+GET {{baseUrl}}/solve?numbers=2,5,7,10,25&target=813
+
+### Impossible target: returns the closest answer
+GET {{baseUrl}}/solve?numbers=1,1,1,1&target=100
+
+### Same answer as JSON
+GET {{baseUrl}}/solve?numbers=3,3,8,8&target=24&format=json

@@ -1,6 +1,7 @@
 const express = require('express');
 const { drawLotoNumbers } = require('./lib/loto');
 const { askEightBall } = require('./lib/eight-ball');
+const { parseSolveOptions, solve, renderText } = require('./lib/solve');
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -36,10 +37,32 @@ app.get('/8ball', (_request, response) => {
   response.json({ answer: askEightBall() });
 });
 
+app.get('/solve', (request, response) => {
+  let options;
+  try {
+    options = parseSolveOptions(request.query);
+  } catch (error) {
+    response.status(400).json({ error: error.message });
+    return;
+  }
+  const result = solve(options);
+  response.set('X-Content-Type-Options', 'nosniff');
+  response.set('Cache-Control', 'no-store');
+  if (options.format === 'text') {
+    response.type('text').send(renderText(result));
+    return;
+  }
+  response.json(result);
+});
+
 app.use((_request, response) => {
   response.status(404).type('text').send('Not found');
 });
 
-app.listen(port, '127.0.0.1', () => {
-  console.log(`API listening at http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, '127.0.0.1', () => {
+    console.log(`API listening at http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
